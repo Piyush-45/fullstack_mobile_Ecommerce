@@ -1,0 +1,1 @@
+ALTER TABLE "products" ADD COLUMN "qunatity" integer DEFAULT 0;
