@@ -1,5 +1,5 @@
 // !! make db ,productTable import relative to avoid errors
-import { productsTable } from '../../db/productSchema'
+import {  productsTable } from '../../db/productSchema'
 import { db } from '../../db/index'
 
 import { eq } from "drizzle-orm"
@@ -30,20 +30,22 @@ export const getProductById = async (req: Request, res: Response) => {
 
     }
 }
-
 export const createProduct = async (req: Request, res: Response) => {
-    try {
-        const [products] = await db
-            .insert(productsTable)
-            .values(req.body)
-            .returning();
+  try {
+      // Destructure fields and ignore `id`
+      const { id, ...productData } = req.body;
 
-        res.status(201).json(products)
-    } catch (e) {
-        res.status(500).send(e)
-    }
+      const [product] = await db
+          .insert(productsTable)
+          .values(productData) // Insert only fields other than `id`
+          .returning();
 
-}
+      res.status(201).json(product);
+  } catch (e) {
+      res.status(500).send(e);
+  }
+};
+
 
 export async function updateProduct(req: Request, res: Response) {
     try {
